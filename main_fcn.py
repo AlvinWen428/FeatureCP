@@ -39,6 +39,21 @@ def makedirs(path):
         print(path, "already exist!")
 
 
+def visualize(image, height, width, save_dir):
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+    plt.axis("off")
+    fig.set_size_inches(width / 100.0 / 3.0, height / 100.0 / 3.0)
+    plt.gca().xaxis.set_major_locator(plt.NullLocator())
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
+    plt.subplots_adjust(top=1, bottom=0, left=0, right=1, hspace=0, wspace=0)
+    plt.margins(0, 0)
+    plt.xticks([])
+    plt.yticks([])
+    plt.savefig(save_dir, pad_inches=0)
+    plt.close()
+
+
 def random_split(dataset, lengths, generator=default_generator, cal_test_generator=None):
     """
     Refactor the random_split function of pytorch.
@@ -191,10 +206,21 @@ def main(train_loader, cal_loader, test_loader, args):
 
     test_intervals = []
     all_y_test = []
+    img_idx = 0
     for x_test, discrete_y_test, y_test in tqdm(test_loader):
         intervals = icp.predict(x_test, significance=alpha)
         test_intervals.append(intervals)
         all_y_test.append(y_test.cpu().numpy())
+
+        # this is used for visualization
+        if args.visualize:
+            loglog_interval = np.exp(-np.exp(intervals))
+            show_interval = np.abs(loglog_interval[..., 1] - loglog_interval[..., 0])
+            for img_interval in show_interval:
+                img_interval = img_interval.reshape(19, args.height, args.width).mean(axis=0)
+                img_name = os.path.basename(test_loader.dataset.dataset.train_data[test_loader.dataset.indices[img_idx]])
+                visualize(img_interval, height=args.height, width=args.width, save_dir=os.path.join(f'visualization/seed{seed}', img_name))
+                img_idx += 1
 
     test_intervals = np.concatenate(test_intervals, axis=0)
     all_y_test = np.concatenate(all_y_test, axis=0)
@@ -248,6 +274,8 @@ if __name__ == '__main__':
     parser.add_argument("--feat_step", "--fs", type=int, default=None)
     parser.add_argument("--feat_norm", "--fn", default=-1)
     parser.add_argument("--cert_method", "--cm", type=int, default=0, choices=[0, 1, 2, 3])
+
+    parser.add_argument("--visualize", action="store_true", default=False, help="visualize the length in the image")
     args = parser.parse_args()
 
     fcp_coverage_list, fcp_length_list, cp_coverage_list, cp_length_list = [], [], [], []
@@ -255,6 +283,9 @@ if __name__ == '__main__':
         seed_torch(seed)
         os.environ['CUDA_VISIBLE_DEVICES'] = "{:}".format(args.device)
         device = torch.device("cpu") if args.device < 0 else torch.device("cuda")
+
+        if args.visualize:
+            makedirs(f"./visualization/seed{seed}")
 
         nn_learn_func = torch.optim.Adam
 
