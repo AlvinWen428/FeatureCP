@@ -46,11 +46,19 @@ Please download it from the [official website](https://www.cityscapes-dataset.co
 We also provide the checkpoint of [FCN](https://arxiv.org/abs/1411.4038) trained by Cityscapes by this [link](https://drive.google.com/file/d/1snj6caNRM454rC5LxxJsXA5BLuFuTINQ/view?usp=sharing).
 Download the checkpoint and move it into `./ckpt/cityscapes/`.
 
+**Note**: As discussed in Section 5.1 and Appendix B.1 in [our paper](https://arxiv.org/pdf/2210.00173.pdf), we transform the
+original pixel-wise classification problem into a high-dimensional pixel-wise regression problem. Specifically, we convert the label space from $[0, 1]$ to
+$(−\infty, +\infty)$ by the double log trick, i.e., $\dot{y}=log(-log(\tilde{y}))$.
+Therefore, if you want to visualize the estimated length as Figure 3 or evaluate the mIoU of the provided FCN model, 
+you need to convert the output space to the original label space by `output = torch.exp(-torch.exp(output))`.
+
 The command to execute the Cityscapes experiment is:
 ```
 export $CITYSCAPES_PATH = 'your path to the cityscapes'
 python main_fcn.py --device 0 --data cityscapes --dataset-dir $CITYSCAPES_PATH --batch_size 20 --feat_step 10 --feat_lr 0.1 --workers 10 --seed 0 1 2 3 4
 ```
+
+If you want to save the visualization of estimated length like Figure 3, you can add `--visualize` in the common.
 
 ## 3. Citation
 If you find our work is helpful to you, please cite our paper:
