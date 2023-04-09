@@ -1,0 +1,3 @@
+[submodule "FCN-Trainer"]
+	path = FCN-Trainer
+	url = git@github.com:AlvinWen428/FCN-Trainer.git
