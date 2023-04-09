@@ -58,7 +58,7 @@ export $CITYSCAPES_PATH = 'your path to the cityscapes'
 python main_fcn.py --device 0 --data cityscapes --dataset-dir $CITYSCAPES_PATH --batch_size 20 --feat_step 10 --feat_lr 0.1 --workers 10 --seed 0 1 2 3 4
 ```
 
-If you want to save the visualization of estimated length like Figure 3, you can add `--visualize` in the common.
+If you want to save the visualization of estimated length like Figure 3, you can add `--visualize` in the command.
 
 ## 3. Citation
 If you find our work is helpful to you, please cite our paper:
