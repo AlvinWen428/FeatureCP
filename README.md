@@ -1,10 +1,12 @@
 # FeatureCP
 
-> [**Predictive Inference with Feature Conformal Prediction**](https://arxiv.org/pdf/2210.00173.pdf)
+> [**Predictive Inference with Feature Conformal Prediction**](https://arxiv.org/pdf/2210.00173.pdf) **(Accepted by ICLR 2023)**
 >
 >[Jiaye Teng*](https://www.tengjiaye.com/), [Chuan Wen*](https://alvinwen428.github.io/), [Dinghuai Zhang*](https://zdhnarsil.github.io/),
 >[Yoshua Bengio](https://yoshuabengio.org/), [Yang Gao](https://yang-gao.weebly.com/), [Yang Yuan](http://people.iiis.tsinghua.edu.cn/~yuanyang/en.html)
 
+
+![concept figure](./concept.png)
 
 ## 1. Installation
 
@@ -43,8 +45,10 @@ python main.py --data x100-y10-reg --no-resume --feat_lr 0.001 --feat_step 80 --
 
 Cityscapes is a commonly-used semantic segmentation dataset.
 Please download it from the [official website](https://www.cityscapes-dataset.com/).
-We also provide the checkpoint of [FCN](https://arxiv.org/abs/1411.4038) trained by Cityscapes by this [link](https://drive.google.com/file/d/1snj6caNRM454rC5LxxJsXA5BLuFuTINQ/view?usp=sharing).
-Download the checkpoint and move it into `./ckpt/cityscapes/`.
+
+The [FCN](https://arxiv.org/abs/1411.4038) model need to firstly be trained on Cityscapes with the codebase in `./FCN-Trainer/`.
+We also provide the checkpoint trained by us in this [link](https://drive.google.com/file/d/1snj6caNRM454rC5LxxJsXA5BLuFuTINQ/view?usp=sharing).
+Please train the FCN to get the model checkpoint or simply download our checkpoint, and move it into `./ckpt/cityscapes/`.
 
 **Note**: As discussed in Section 5.1 and Appendix B.1 in [our paper](https://arxiv.org/pdf/2210.00173.pdf), we transform the
 original pixel-wise classification problem into a high-dimensional pixel-wise regression problem. Specifically, we convert the label space from $[0, 1]$ to
